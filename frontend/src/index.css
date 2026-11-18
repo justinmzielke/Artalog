@@ -1,0 +1,541 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Libre Baskerville', Georgia, serif;
+  --font-ui: 'Inter', Arial, sans-serif;
+
+  --text-page: 27px;
+  --text-artwork-heading: 17px;
+  --text-panel-heading: 15px;
+  --text-section-label: 11px;
+  --text-artwork-list: 15px;
+  --text-body: 12px;
+  --text-caption: 11px;
+
+  --color-sidebar-bg: #29332f;
+  --color-sidebar-text: #f0ede4;
+  --color-sidebar-muted: #b9b8ac;
+  --color-sidebar-active-bg: #3a4444;
+  --color-sidebar-hover-bg: #333d3d;
+
+  --color-main-bg: #eae6dd;
+  --color-panel-bg: #f7f3eb;
+  --color-panel-header-bg: #f3ede2;
+  --color-border: #d8d0c4;
+
+  --color-text-primary: #282824;
+  --color-text-muted: #63625b;
+  --color-accent: #485a50;
+
+  --color-input-bg: #ffffff;
+  --color-input-border: #cec7bb;
+  --color-primary-button-bg: #282824;
+  --color-primary-button-text: #f9f7f2;
+
+  --shadow-panel:
+    0 0.5px 1px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.025),
+    0 4px 14px rgba(0, 0, 0, 0.035);
+  --shadow-card:
+    0 0.5px 1px rgba(0, 0, 0, 0.035),
+    0 1px 3px rgba(0, 0, 0, 0.025);
+  --shadow-hover:
+    0 2px 6px rgba(0, 0, 0, 0.035),
+    0 6px 18px rgba(0, 0, 0, 0.04);
+
+  font-family: var(--font-ui);
+}
+
+[data-appearance-theme='archive_green'] {
+  --shadow-panel:
+    0 0.5px 1px rgba(28, 22, 14, 0.045),
+    0 1px 2px rgba(28, 22, 14, 0.028),
+    0 4px 14px rgba(28, 22, 14, 0.04);
+  --shadow-card:
+    0 0.5px 1px rgba(28, 22, 14, 0.04),
+    0 1px 3px rgba(28, 22, 14, 0.03);
+  --shadow-hover:
+    0 2px 6px rgba(28, 22, 14, 0.038),
+    0 6px 18px rgba(28, 22, 14, 0.044);
+}
+
+[data-appearance-theme='charcoal'] {
+  --shadow-panel:
+    0 0.5px 1px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 3px 10px rgba(0, 0, 0, 0.15);
+  --shadow-card:
+    0 0.5px 1px rgba(0, 0, 0, 0.18),
+    0 1px 2px rgba(0, 0, 0, 0.16);
+  --shadow-hover:
+    0 2px 5px rgba(0, 0, 0, 0.2),
+    0 5px 14px rgba(0, 0, 0, 0.17);
+}
+
+[data-appearance-theme='custom'] {
+  --shadow-panel:
+    0 0.5px 1px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.025),
+    0 4px 14px rgba(0, 0, 0, 0.035);
+  --shadow-card:
+    0 0.5px 1px rgba(0, 0, 0, 0.035),
+    0 1px 3px rgba(0, 0, 0, 0.025);
+  --shadow-hover:
+    0 2px 6px rgba(0, 0, 0, 0.035),
+    0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.museum-serif {
+  font-family: var(--font-display);
+}
+
+.type-page-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-page);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.type-artwork-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-artwork-heading);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.type-panel-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-panel-heading);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.type-section-label {
+  font-family: var(--font-display);
+  font-size: var(--text-section-label);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.type-artwork-list {
+  font-family: var(--font-display);
+  font-size: var(--text-artwork-list);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.type-body {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
+.type-body-strong {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
+.type-caption {
+  font-family: var(--font-ui);
+  font-size: var(--text-caption);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+}
+
+.type-sidebar-wordmark {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 7px;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.type-sidebar-subtitle {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.type-sidebar-nav {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.type-tab {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
+.type-button {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.archive-workspace {
+  display: grid;
+  grid-template-columns: minmax(300px, 32%) minmax(0, 1fr);
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+
+.artwork-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) 76px minmax(220px, 0.9fr);
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Image + thumbnail strip occupy the first two overview columns as one group. */
+.artwork-gallery {
+  grid-column: 1 / span 2;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* The strip is out of flow so it never grows the row; it is centered on the
+   viewer height (the photograph's center) and scrolls if taller than it. */
+.artwork-gallery-thumbs {
+  position: relative;
+  flex: 0 0 76px;
+  width: 76px;
+}
+
+.artwork-gallery-strip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin-block: auto;
+  height: max-content;
+  max-height: 100%;
+  width: max-content;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 1279px) {
+  .archive-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .artwork-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .artwork-gallery {
+    grid-column: auto;
+  }
+}
+
+body {
+  background: var(--color-main-bg);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.surface-panel {
+  box-shadow: var(--shadow-panel);
+}
+
+/*
+ * Directional lighting (interface only). One light source, upper-left:
+ * highlights sit on the top/left edges, shadows fall to the lower-right.
+ * Highlight colors are mixed from each theme's own surface color, so they
+ * stay subtle in light themes and never turn bright white in dark ones.
+ * Only box-shadow / border-adjacent layers are used; no overlays.
+ */
+:root {
+  --lit-rgb: 0 0 0;
+  --lit-k: 1;
+}
+
+[data-appearance-theme='archive_green'] {
+  --lit-rgb: 28 22 14;
+}
+
+[data-appearance-theme='charcoal'] {
+  --lit-rgb: 0 0 0;
+  --lit-k: 4;
+}
+
+.panel-lit,
+.panel-lit-strong {
+  --lit-hl: color-mix(in srgb, var(--color-panel-bg) 55%, #ffffff);
+}
+
+[data-appearance-theme='charcoal'] .panel-lit,
+[data-appearance-theme='charcoal'] .panel-lit-strong {
+  --lit-hl: color-mix(in srgb, var(--color-panel-bg) 90%, #ffffff);
+}
+
+.panel-lit {
+  box-shadow:
+    inset 1px 1px 0 var(--lit-hl),
+    0 0.5px 1px rgb(var(--lit-rgb) / calc(0.04 * var(--lit-k))),
+    1px 2px 3px rgb(var(--lit-rgb) / calc(0.03 * var(--lit-k))),
+    3px 6px 14px rgb(var(--lit-rgb) / calc(0.035 * var(--lit-k)));
+}
+
+.panel-lit-strong {
+  box-shadow:
+    inset 1px 1px 0 var(--lit-hl),
+    0 0.5px 1px rgb(var(--lit-rgb) / calc(0.045 * var(--lit-k))),
+    2px 3px 5px rgb(var(--lit-rgb) / calc(0.035 * var(--lit-k))),
+    5px 9px 22px rgb(var(--lit-rgb) / calc(0.045 * var(--lit-k)));
+}
+
+/* Letterpress impression for the two primary panel titles. Text-shadow only:
+   faint highlight on the upper-left, slightly darker impression lower-right. */
+.title-letterpress {
+  --press-hl: color-mix(in srgb, var(--color-panel-bg) 8%, #ffffff);
+  --press-sh: rgb(var(--lit-rgb) / calc(0.22 * var(--lit-k)));
+  text-shadow:
+    -1px -1px 0 var(--press-hl),
+    0.5px 0.5px 0 var(--press-sh);
+}
+
+/* Light themes: ink lifted slightly toward the paper so the impression reads. */
+[data-appearance-theme]:not([data-appearance-theme='charcoal']) .title-letterpress.type-panel-heading,
+[data-appearance-theme]:not([data-appearance-theme='charcoal']) .title-letterpress.type-artwork-heading {
+  color: color-mix(in srgb, var(--color-text-primary) 74%, var(--color-panel-bg));
+}
+
+[data-appearance-theme='charcoal'] .title-letterpress {
+  --press-hl: color-mix(in srgb, var(--color-panel-bg) 80%, #ffffff);
+  --press-sh: rgb(var(--lit-rgb) / 0.5);
+}
+
+/* Sidebar: matte face, precision-machined 3px edge on its right boundary
+   (cool highlight | face | darker gray) and a faint shadow on the workspace. */
+.sidebar-surface {
+  --edge-hl: color-mix(in srgb, var(--color-sidebar-bg) 14%, #fbfdff);
+  --edge-dark: color-mix(in srgb, var(--color-sidebar-bg) 88%, #0c0e12);
+  box-shadow:
+    1px 0 2px rgb(var(--lit-rgb) / calc(0.04 * var(--lit-k))),
+    4px 0 12px rgb(var(--lit-rgb) / calc(0.045 * var(--lit-k)));
+}
+
+.sidebar-surface::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3px;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    var(--edge-hl) 0 1px,
+    transparent 1px 2px,
+    var(--edge-dark) 2px 3px
+  );
+}
+
+[data-appearance-theme='archive_green'] .sidebar-surface,
+[data-appearance-theme='charcoal'] .sidebar-surface {
+  --edge-hl: color-mix(in srgb, var(--color-sidebar-bg) 86%, #dfe9fa);
+  --edge-dark: color-mix(in srgb, var(--color-sidebar-bg) 55%, #000000);
+}
+
+/*
+ * Archival cardstock texture. A real photographic grain tile (seamless,
+ * color-neutral black/white + alpha) drawn on a pseudo-element that sits
+ * behind the surface's content (z-index: -1 inside an isolated stacking
+ * context). It never overlays children, so artwork, thumbnails, text,
+ * buttons and inputs are untouched. Tune strength with the opacity vars.
+ *
+ * Each layer is its own material: the canvas uses the tile at 1024px, the
+ * panels use a coarser 1360px scale, much fainter, and every panel starts
+ * the tile at a different origin so grain never continues across panels.
+ */
+:root {
+  --texture-image: url('./assets/paper-cardstock.png');
+  --texture-size-main: 1024px 1024px;
+  --texture-size-panel: 1360px 1360px;
+  --texture-opacity-main: 0.0275;
+  --texture-opacity-panel: 0.0124;
+}
+
+.paper-surface {
+  position: relative;
+  isolation: isolate;
+}
+
+.paper-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: var(--texture-image);
+  background-size: var(--texture-size-panel);
+  background-repeat: repeat;
+  background-position: 0 0;
+  opacity: var(--texture-opacity-panel);
+}
+
+.paper-surface-main::before {
+  background-size: var(--texture-size-main);
+  opacity: var(--texture-opacity-main);
+}
+
+.paper-origin-archive::before {
+  background-position: -173px -311px;
+}
+
+.paper-origin-preview::before {
+  background-position: -587px -92px;
+}
+
+.paper-origin-info::before {
+  background-position: -409px -648px;
+}
+
+.surface-card {
+  box-shadow: var(--shadow-card);
+}
+
+/*
+ * Recessed image window (interface only). The surrounding "matboard" is the
+ * panel surface itself; the wrapper has no fill, border or shadow. Two
+ * pointer-events:none pseudo-elements build the cut:
+ *  ::before  the 2px angled bevel ring around the opening, with different
+ *            colors per side (warm shade top/left, soft highlight
+ *            bottom/right) so it reads as a cut edge, not an outline.
+ *  ::after   a directional inset shadow over the photograph's perimeter
+ *            (strong top/left, faint bottom/right) that fades to nothing
+ *            within a few px, leaving the artwork's center untouched.
+ * The <img> keeps its pixels, opacity and filters untouched.
+ */
+.image-window {
+  --bevel-top: color-mix(in srgb, var(--color-panel-bg) 76%, #7d6a4c);
+  --bevel-left: color-mix(in srgb, var(--color-panel-bg) 84%, #7d6a4c);
+  --bevel-bottom: color-mix(in srgb, var(--color-panel-bg) 52%, #ffffff);
+  --bevel-right: color-mix(in srgb, var(--color-panel-bg) 62%, #ffffff);
+  --recess-rgb: 40, 30, 15;
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 2px;
+  line-height: 0;
+}
+
+.image-window img {
+  max-height: 516px;
+}
+
+.image-window::before,
+.image-window::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border-radius: 0;
+}
+
+.image-window::before {
+  inset: 0;
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--bevel-top) var(--bevel-right) var(--bevel-bottom) var(--bevel-left);
+}
+
+.image-window::after {
+  inset: 2px;
+  box-shadow:
+    inset 1px 1px 1px rgba(var(--recess-rgb), 0.14),
+    inset 3px 3px 4px rgba(var(--recess-rgb), 0.18),
+    inset -1px -1px 2px rgba(var(--recess-rgb), 0.05);
+}
+
+[data-appearance-theme='charcoal'] .image-window {
+  --bevel-top: color-mix(in srgb, var(--color-panel-bg) 62%, #000000);
+  --bevel-left: color-mix(in srgb, var(--color-panel-bg) 72%, #000000);
+  --bevel-bottom: color-mix(in srgb, var(--color-panel-bg) 88%, #ffffff);
+  --bevel-right: color-mix(in srgb, var(--color-panel-bg) 92%, #ffffff);
+  --recess-rgb: 0, 0, 0;
+}
+
+.surface-card-hover {
+  transition: box-shadow 180ms ease;
+}
+
+.surface-card-hover:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+input:not([type='checkbox']),
+textarea,
+select {
+  @apply w-full min-w-0 rounded-md px-3 py-2 outline-none focus:ring-2;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  color: var(--color-text-primary);
+  --tw-ring-color: color-mix(in srgb, var(--color-accent) 45%, #ffffff 55%);
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+[data-appearance-theme='charcoal'] .text-graphite-500,
+[data-appearance-theme='charcoal'] .text-graphite-600,
+[data-appearance-theme='charcoal'] .text-graphite-700,
+[data-appearance-theme='charcoal'] .text-graphite-800,
+[data-appearance-theme='charcoal'] .text-graphite-900 {
+  color: var(--color-text-muted) !important;
+}
+
+[data-appearance-theme='charcoal'] .text-white {
+  color: var(--color-primary-button-text) !important;
+}
+
+[data-appearance-theme='charcoal'] .bg-white,
+[data-appearance-theme='charcoal'] .bg-graphite-50,
+[data-appearance-theme='charcoal'] .bg-graphite-100,
+[data-appearance-theme='charcoal'] .bg-graphite-900\/40,
+[data-appearance-theme='charcoal'] .bg-graphite-900 {
+  background-color: color-mix(in srgb, var(--color-panel-bg) 88%, #ffffff 12%) !important;
+}
+
+[data-appearance-theme='charcoal'] .border-graphite-200,
+[data-appearance-theme='charcoal'] .border-graphite-300,
+[data-appearance-theme='charcoal'] .border-graphite-600,
+[data-appearance-theme='charcoal'] .border-graphite-700,
+[data-appearance-theme='charcoal'] .border-graphite-900 {
+  border-color: var(--color-border) !important;
+}

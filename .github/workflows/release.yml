@@ -1,0 +1,40 @@
+name: Release
+
+# Publishing a version: create a GitHub release with a tag like v0.2.0 (or push such a tag).
+# This builds the Windows installer and attaches it, plus the files the in-app updater needs.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm ci --prefix frontend
+          npm ci --prefix backend
+          npm ci --prefix desktop
+
+      - name: Set version from tag
+        shell: bash
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version --prefix desktop
+
+      - name: Build and publish installer
+        working-directory: desktop
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node ../scripts/stage.js
+          npx electron-builder --win --publish always

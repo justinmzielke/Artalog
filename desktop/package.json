@@ -1,0 +1,64 @@
+{
+  "name": "artalog-desktop",
+  "productName": "Artalog",
+  "version": "0.1.0",
+  "description": "Artalog - an archive for your artwork",
+  "author": "Artalog",
+  "license": "ISC",
+  "private": true,
+  "homepage": "https://github.com/justinmzielke/artalog",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justinmzielke/artalog.git"
+  },
+  "main": "main.js",
+  "scripts": {
+    "stage": "node ../scripts/stage.js",
+    "start": "electron .",
+    "dist": "npm run stage && electron-builder --win --publish never"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0",
+    "better-sqlite3": "^12.11.1",
+    "cors": "^2.8.6",
+    "electron-updater": "^6.8.11",
+    "express": "^5.3.0",
+    "extract-zip": "^2.0.1",
+    "multer": "^2.5.0",
+    "pdf-lib": "^1.17.1",
+    "sharp": "^0.35.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.artalog.app",
+    "productName": "Artalog",
+    "directories": {
+      "output": "release"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "justinmzielke",
+      "repo": "artalog"
+    },
+    "files": [
+      "main.js",
+      "server/**",
+      "frontend/**"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}
