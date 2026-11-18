@@ -42,7 +42,8 @@
     "publish": {
       "provider": "github",
       "owner": "justinmzielke",
-      "repo": "artalog"
+      "repo": "artalog",
+      "releaseType": "release"
     },
     "files": [
       "main.js",

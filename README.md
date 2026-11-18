@@ -39,7 +39,7 @@ npm install --prefix desktop
 npm run dist --prefix desktop   # output in desktop/release
 ```
 
-Publish a release: create a GitHub release with a tag such as `v0.2.0`. The `Release` workflow builds the installer and attaches it. Edit the draft release it creates, then click **Publish release** so the in-app updater can see it.
+Publish a release: create a GitHub release with a tag such as `v0.2.0`. The `Release` workflow builds the installer and attaches it to that release a few minutes later.
 
 ## License
 
