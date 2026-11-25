@@ -3,7 +3,7 @@
 const { app, BrowserWindow, dialog, shell, Menu, session } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const crypto = require('node:crypto');
-const extract = require('extract-zip');
+const { extractBackup } = require('./safe-extract');
 const fs = require('node:fs');
 const http = require('node:http');
 const net = require('node:net');
@@ -193,7 +193,7 @@ async function restoreFromBackup() {
   }
 
   try {
-    await extract(zipPick.filePaths[0], { dir: dest });
+    await extractBackup(zipPick.filePaths[0], dest);
     if (!fs.existsSync(path.join(dest, 'artalog.sqlite'))) {
       throw new Error('This file does not look like an Artalog backup.');
     }

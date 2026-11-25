@@ -141,25 +141,21 @@ async function renderImageForExport(sourcePath: string, outputPath: string, requ
     ? { width: maxEdge, height: maxEdge, fit: 'inside' as const, withoutEnlargement: true }
     : undefined;
 
+  // Work on buffers (not file paths) so Windows does not keep the temp files locked.
+  const source = await fsPromises.readFile(sourcePath);
+
   if (!maxFileMb) {
-    await sharp(sourcePath)
-      .rotate()
-      .resize(resizeConfig)
-      .jpeg({ quality: 90 })
-      .toFile(outputPath);
+    const output = await sharp(source).rotate().resize(resizeConfig).jpeg({ quality: 90 }).toBuffer();
+    await fsPromises.writeFile(outputPath, output);
     return;
   }
 
   const qualities = [90, 85, 80, 75, 70, 65, 60, 55, 50, 45];
   for (const quality of qualities) {
-    await sharp(sourcePath)
-      .rotate()
-      .resize(resizeConfig)
-      .jpeg({ quality })
-      .toFile(outputPath);
+    const output = await sharp(source).rotate().resize(resizeConfig).jpeg({ quality }).toBuffer();
+    await fsPromises.writeFile(outputPath, output);
 
-    const stats = await fsPromises.stat(outputPath);
-    if (fileSizeMb(stats.size) <= maxFileMb) {
+    if (fileSizeMb(output.length) <= maxFileMb) {
       return;
     }
   }
@@ -208,7 +204,18 @@ function toDisplayCase(value: string): string {
 }
 
 function escapeCsv(value: string): string {
-  return `"${value.replace(/"/g, '""')}"`;
+  // A leading = + - @ would run as a formula when the CSV is opened in a spreadsheet.
+  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return `"${safe.replace(/"/g, '""')}"`;
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function displayLabelValue(field: LabelField, value: string): string {
@@ -405,7 +412,7 @@ async function createPortfolioPdf(outputPath: string, input: ExportGenerationInp
       y = 700;
     }
 
-    const thumbBytes = await sharp(preparedImagePaths[i])
+    const thumbBytes = await sharp(await fsPromises.readFile(preparedImagePaths[i]))
       .resize({ width: thumbSize, height: thumbSize, fit: 'inside', withoutEnlargement: true })
       .jpeg({ quality: 86 })
       .toBuffer();
@@ -468,7 +475,7 @@ async function createImagesZip(
         const imageBuffer = await fsPromises.readFile(imagePath);
         zip.append(imageBuffer, { name: fileName });
 
-        const thumbBuffer = await sharp(imagePath)
+        const thumbBuffer = await sharp(imageBuffer)
           .resize({ width: 256, height: 256, fit: 'inside', withoutEnlargement: true })
           .jpeg({ quality: 88 })
           .toBuffer();
@@ -485,7 +492,7 @@ async function createImagesZip(
         );
 
         const htmlFieldCells = fieldValues
-          .map((value) => `<td>${value}</td>`)
+          .map((value) => `<td>${escapeHtml(value)}</td>`)
           .join('');
         inventoryHtmlRows.push(
           `<tr><td>${String(index + 1).padStart(2, '0')}</td><td><img src="${thumbPathInZip}" width="96" height="96" alt="thumb ${index + 1}" /></td>${htmlFieldCells}<td>${fileName}</td></tr>`,

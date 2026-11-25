@@ -18,7 +18,17 @@ const PORT = Number(process.env.PORT || 4000);
 const HOST = process.env.HOST || '127.0.0.1';
 
 const allowedOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+const loopbackHostPattern = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i;
 
+// Only formats we re-encode and can safely serve; never trust the uploaded file name or type.
+const IMAGE_EXTENSIONS: Record<string, string> = {
+  jpeg: '.jpg',
+  png: '.png',
+  webp: '.webp',
+  gif: '.gif',
+  tiff: '.tif',
+  avif: '.avif',
+};
 const ORIGINALS_DIR = path.join(DATA_DIR, 'originals');
 const THUMBS_DIR = path.join(DATA_DIR, 'thumbnails');
 const EXPORTS_DIR = path.join(DATA_DIR, 'exports');
@@ -28,6 +38,16 @@ const HAS_FRONTEND = existsSync(path.join(FRONTEND_DIR, 'index.html'));
 void fs.mkdir(ORIGINALS_DIR, { recursive: true });
 void fs.mkdir(THUMBS_DIR, { recursive: true });
 void fs.mkdir(EXPORTS_DIR, { recursive: true });
+
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  // Rejecting other Host names stops a web page from reaching the archive through DNS rebinding.
+  if (['127.0.0.1', 'localhost', '::1'].includes(HOST) && !loopbackHostPattern.test(req.headers.host ?? '')) {
+    res.status(403).send('Forbidden');
+    return;
+  }
+  next();
+});
 
 app.use(
   cors({
@@ -139,7 +159,7 @@ const imageOrderSchema = z.object({
 });
 
 const requirementParseSchema = z.object({
-  text: z.string().min(1),
+  text: z.string().min(1).max(50_000),
 });
 
 const exportRequirementsSchema = z.object({
@@ -445,6 +465,21 @@ app.post('/api/artworks/:id/images', upload.array('images', 20), async (req, res
     return;
   }
 
+  const checked: Array<{ file: Express.Multer.File; ext: string; width: number | null; height: number | null }> = [];
+  for (const file of files) {
+    try {
+      const meta = await sharp(file.buffer).metadata();
+      const ext = meta.format ? IMAGE_EXTENSIONS[meta.format] : undefined;
+      if (!ext) {
+        throw new Error('Unsupported image format');
+      }
+      checked.push({ file, ext, width: meta.width ?? null, height: meta.height ?? null });
+    } catch {
+      res.status(400).json({ error: `"${file.originalname}" is not a supported image (JPEG, PNG, WebP, GIF, TIFF or AVIF).` });
+      return;
+    }
+  }
+
   const artworkOriginalsDir = path.join(ORIGINALS_DIR, artworkId);
   const artworkThumbsDir = path.join(THUMBS_DIR, artworkId);
   await fs.mkdir(artworkOriginalsDir, { recursive: true });
@@ -456,22 +491,19 @@ app.post('/api/artworks/:id/images', upload.array('images', 20), async (req, res
 
   let sortOrder = maxSortRow.max_sort + 1;
 
-  for (const file of files) {
+  for (const { file, ext, width, height } of checked) {
     const imageId = id();
-    const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
     const storedFilename = `${imageId}${ext}`;
     const originalPath = path.join(artworkOriginalsDir, storedFilename);
     const thumbPath = path.join(artworkThumbsDir, `${storedFilename}.jpg`);
-
-    await fs.writeFile(originalPath, file.buffer);
-
-    const metadata = await sharp(file.buffer).metadata();
 
     await sharp(file.buffer)
       .rotate()
       .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
       .jpeg({ quality: 82 })
       .toFile(thumbPath);
+
+    await fs.writeFile(originalPath, file.buffer);
 
     db.prepare(
       `
@@ -492,8 +524,8 @@ app.post('/api/artworks/:id/images', upload.array('images', 20), async (req, res
       stored_filename: storedFilename,
       mime_type: file.mimetype,
       size_bytes: file.size,
-      width: metadata.width ?? null,
-      height: metadata.height ?? null,
+      width,
+      height,
       caption: null,
       credit: null,
       is_primary: 0,
