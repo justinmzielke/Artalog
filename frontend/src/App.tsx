@@ -415,7 +415,7 @@ function App() {
   const [draggedExportArtworkId, setDraggedExportArtworkId] = useState<string | null>(null);
   const [requirementsPrompt, setRequirementsPrompt] = useState('');
   const [applicationTitle, setApplicationTitle] = useState('');
-  const [filenamePrefix, setFilenamePrefix] = useState('justin_zielke');
+  const [filenamePrefix, setFilenamePrefix] = useState('artist_name');
   const [applicationPanelTab, setApplicationPanelTab] = useState<'builder' | 'selection'>('selection');
   const [exportType, setExportType] = useState<ExportType>('portfolio_pdf');
   const [exportRequirements, setExportRequirements] = useState<ExportRequirements>({
@@ -605,15 +605,15 @@ function App() {
     });
   }, [detail]);
 
-  async function refreshArtworks() {
+  async function refreshArtworks(activeId: string | null = selectedId) {
     setLoading(true);
     try {
       const list = await listArtworks();
       setArtworks(list);
-      if (!selectedId && list.length > 0) {
+      if (!activeId && list.length > 0) {
         await openArtwork(list[0].id);
       }
-      if (selectedId && !list.some((item) => item.id === selectedId)) {
+      if (activeId && !list.some((item) => item.id === activeId)) {
         setSelectedId(null);
         setDetail(null);
         setDraft(blankDraft);
@@ -633,6 +633,20 @@ function App() {
     setDraft(draftFromArtwork(artwork));
     setArchiveEditing(false);
     setStatus('');
+  }
+
+  async function reloadDetail(id: string) {
+    setDetail(await getArtwork(id));
+  }
+
+  async function autosaveDraft() {
+    if (!selectedId || !archiveEditing) {
+      return;
+    }
+    if (!draft.title.trim() || blurbWords > BLURB_WORD_LIMIT || statementWords > STATEMENT_WORD_LIMIT) {
+      return;
+    }
+    await updateArtwork(selectedId, payloadFromDraft(draft));
   }
 
   async function handleSave() {
@@ -702,8 +716,8 @@ function App() {
 
     const created = await createArtwork(payloadFromDraft(draft));
     setSelectedId(created.id);
-    await openArtwork(created.id);
-    await refreshArtworks();
+    await reloadDetail(created.id);
+    await refreshArtworks(created.id);
     return created.id;
   }
 
@@ -719,9 +733,10 @@ function App() {
         return;
       }
 
+      await autosaveDraft();
       await uploadArtworkImages(artworkId, Array.from(event.target.files));
-      await openArtwork(artworkId);
-      await refreshArtworks();
+      await reloadDetail(artworkId);
+      await refreshArtworks(artworkId);
       setStatus('Images uploaded. Originals preserved; thumbnails generated.');
     } catch (error) {
       console.error(error);
@@ -733,20 +748,22 @@ function App() {
   }
 
   async function handleImageMetaSave(image: ArtworkImage, patch: Partial<ArtworkImage>) {
+    await autosaveDraft();
     await updateImage(image.id, {
       caption: patch.caption ?? image.caption ?? null,
       credit: patch.credit ?? image.credit ?? null,
       isDetail: patch.isDetail ?? image.isDetail,
     });
     if (selectedId) {
-      await openArtwork(selectedId);
+      await reloadDetail(selectedId);
     }
   }
 
   async function handlePrimaryImage(imageId: string) {
+    await autosaveDraft();
     await setPrimaryImage(imageId);
     if (selectedId) {
-      await openArtwork(selectedId);
+      await reloadDetail(selectedId);
       await refreshArtworks();
     }
   }
@@ -757,9 +774,10 @@ function App() {
       return;
     }
 
+    await autosaveDraft();
     await deleteImage(imageId);
     if (selectedId) {
-      await openArtwork(selectedId);
+      await reloadDetail(selectedId);
       await refreshArtworks();
     }
   }
@@ -779,8 +797,9 @@ function App() {
     const [moved] = reordered.splice(fromIndex, 1);
     reordered.splice(toIndex, 0, moved);
 
+    await autosaveDraft();
     await reorderImages(selectedId, reordered.map((img) => img.id));
-    await openArtwork(selectedId);
+    await reloadDetail(selectedId);
     setDraggedImageId(null);
   }
 
@@ -1021,12 +1040,12 @@ function App() {
     }
 
     if (!applicationTitle.trim()) {
-      setBuilderStatus('Enter an application title, like Krasner Foundation.');
+      setBuilderStatus('Enter an application title, like Residency Open Call.');
       return;
     }
 
     if (!filenamePrefix.trim()) {
-      setBuilderStatus('Enter a filename prefix, like justin_zielke.');
+      setBuilderStatus('Enter a filename prefix, like jane_doe.');
       return;
     }
 
@@ -1239,13 +1258,13 @@ function App() {
               <input
                 value={applicationTitle}
                 onChange={(event) => setApplicationTitle(event.target.value)}
-                placeholder="Application title (e.g. Krasner Foundation)"
+                placeholder="Application title (e.g. Residency Open Call)"
               />
 
               <input
                 value={filenamePrefix}
                 onChange={(event) => setFilenamePrefix(event.target.value)}
-                placeholder="Filename prefix (e.g. justin_zielke)"
+                placeholder="Filename prefix (e.g. jane_doe)"
               />
 
               <textarea
@@ -1867,7 +1886,7 @@ function App() {
 
             <div className="flex items-center gap-3">
               <label className="w-32 shrink-0 text-xs uppercase tracking-wide text-graphite-500">Title</label>
-              <input value={draft.title} placeholder="Figure No.1 (standing)" onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
+              <input value={draft.title} placeholder="Artwork title" onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
             </div>
 
             <div className="flex items-center gap-3">
