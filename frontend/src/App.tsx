@@ -380,13 +380,13 @@ function payloadFromDraft(draft: ArtworkDraft): ArtworkPayload {
 function App() {
   const [appearanceTheme, setAppearanceTheme] = useState<AppearanceTheme>(() => {
     if (typeof window === 'undefined') {
-      return 'archive_green';
+      return 'gallery_white';
     }
     const saved = window.localStorage.getItem(THEME_STORAGE_KEY);
     if (saved === 'gallery_white' || saved === 'archive_green' || saved === 'charcoal' || saved === 'custom') {
       return saved;
     }
-    return 'archive_green';
+    return 'gallery_white';
   });
   const [customThemeColor, setCustomThemeColor] = useState<string>(() => {
     if (typeof window === 'undefined') {
