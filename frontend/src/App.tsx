@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, CSSProperties } from 'react';
+import placeholderArtwork from './assets/placeholder-artwork.svg';
 import {
   apiBase,
   createArtwork,
@@ -1753,7 +1754,10 @@ function App() {
                             <img src={`${apiBase}${previewImage.originalUrl}`} alt={previewImage.originalFilename} className="block max-w-full max-h-[520px] object-contain" />
                           </div>
                         ) : (
-                          <div className="type-body text-graphite-500">No image selected.</div>
+                          <div className="flex flex-col items-center gap-3">
+                            <img src={placeholderArtwork} alt="Placeholder artwork" className="block max-w-full max-h-[420px] object-contain opacity-80" />
+                            <div className="type-body text-graphite-500">No image yet.</div>
+                          </div>
                         )}
                       </div>
 
