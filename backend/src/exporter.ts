@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 import { ZipArchive } from 'archiver';
 import sharp from 'sharp';
-import { PDFDocument, PDFPage, StandardFonts } from 'pdf-lib';
+import { PDFDocument, PDFPage, StandardFonts, rgb } from 'pdf-lib';
 
 export type ParsedRequirements = {
   imageCount: number | null;
@@ -319,7 +319,7 @@ async function createPortfolioPdf(outputPath: string, input: ExportGenerationInp
     const entries = labelSegments(input.artworks[i], input.requirements);
     const shouldDrawPageNumber = input.requirements.includeLabels && input.requirements.labelFields.includes('page_number');
     const shouldDrawLabel = input.requirements.includeLabels && entries.length > 0;
-    const shouldReserveLabelArea = shouldDrawLabel || shouldDrawPageNumber;
+    const shouldReserveLabelArea = input.requirements.includeLabels;
     const pageNumberText = String(i + 1);
 
     if (isFullImageLayout) {
@@ -344,6 +344,11 @@ async function createPortfolioPdf(outputPath: string, input: ExportGenerationInp
         width: drawWidth,
         height: drawHeight,
       });
+
+      // The cover-fit image can spill into the label strip, so repaint it white.
+      if (shouldReserveLabelArea) {
+        page.drawRectangle({ x: 0, y: 0, width: pageWidth, height: labelHeight, color: rgb(1, 1, 1) });
+      }
 
       if (shouldDrawLabel) {
         drawStyledLabel(page, labelPadding, labelPadding, labelFontSize, entries, font, boldFont);
