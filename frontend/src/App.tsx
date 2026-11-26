@@ -62,9 +62,9 @@ const blankDraft: ArtworkDraft = {
   height: '',
   width: '',
   depth: '',
-  dimensionsUnit: 'cm',
+  dimensionsUnit: 'in',
   weight: '',
-  weightUnit: 'kg',
+  weightUnit: 'lb',
   editionInfo: '',
   price: '',
   currency: 'USD',
@@ -313,9 +313,9 @@ function draftFromArtwork(artwork: Artwork): ArtworkDraft {
     height: artwork.height?.toString() ?? '',
     width: artwork.width?.toString() ?? '',
     depth: artwork.depth?.toString() ?? '',
-    dimensionsUnit: artwork.dimensionsUnit ?? 'cm',
+    dimensionsUnit: artwork.dimensionsUnit ?? 'in',
     weight: artwork.weight?.toString() ?? '',
-    weightUnit: artwork.weightUnit ?? 'kg',
+    weightUnit: artwork.weightUnit ?? 'lb',
     editionInfo: artwork.editionInfo ?? '',
     price: artwork.price?.toString() ?? '',
     currency: artwork.currency ?? 'USD',
@@ -819,7 +819,7 @@ function App() {
 
   function convertDimensions(nextUnit: 'in' | 'cm') {
     setDraft((prev) => {
-      const currentUnit = (prev.dimensionsUnit || 'cm').toLowerCase();
+      const currentUnit = (prev.dimensionsUnit || 'in').toLowerCase();
       if (currentUnit === nextUnit) {
         return { ...prev, dimensionsUnit: nextUnit };
       }
@@ -851,7 +851,7 @@ function App() {
 
   function convertWeight(nextUnit: 'lb' | 'kg') {
     setDraft((prev) => {
-      const currentUnit = (prev.weightUnit || 'kg').toLowerCase();
+      const currentUnit = (prev.weightUnit || 'lb').toLowerCase();
       if (currentUnit === nextUnit) {
         return { ...prev, weightUnit: nextUnit };
       }
@@ -1914,9 +1914,9 @@ function App() {
                 <input className="min-w-[82px] flex-1" value={draft.height} placeholder="H" onChange={(e) => setDraft({ ...draft, height: e.target.value })} />
                 <input className="min-w-[82px] flex-1" value={draft.width} placeholder="W" onChange={(e) => setDraft({ ...draft, width: e.target.value })} />
                 <input className="min-w-[82px] flex-1" value={draft.depth} placeholder="D" onChange={(e) => setDraft({ ...draft, depth: e.target.value })} />
-                <select className="w-16 shrink-0" value={draft.dimensionsUnit || 'cm'} onChange={(e) => convertDimensions(e.target.value as 'in' | 'cm')}>
-                  <option value="cm">cm</option>
+                <select className="w-16 shrink-0" value={draft.dimensionsUnit || 'in'} onChange={(e) => convertDimensions(e.target.value as 'in' | 'cm')}>
                   <option value="in">in</option>
+                  <option value="cm">cm</option>
                 </select>
               </div>
             </div>
@@ -1925,9 +1925,9 @@ function App() {
               <label className="w-32 shrink-0 text-xs uppercase tracking-wide text-graphite-500">Weight</label>
               <div className="flex gap-2 flex-1 min-w-0">
                 <input className="min-w-[120px] flex-1" value={draft.weight} placeholder="Weight" onChange={(e) => setDraft({ ...draft, weight: e.target.value })} />
-                <select className="w-16 shrink-0" value={draft.weightUnit || 'kg'} onChange={(e) => convertWeight(e.target.value as 'lb' | 'kg')}>
-                  <option value="kg">kg</option>
+                <select className="w-16 shrink-0" value={draft.weightUnit || 'lb'} onChange={(e) => convertWeight(e.target.value as 'lb' | 'kg')}>
                   <option value="lb">lb</option>
+                  <option value="kg">kg</option>
                 </select>
               </div>
             </div>
